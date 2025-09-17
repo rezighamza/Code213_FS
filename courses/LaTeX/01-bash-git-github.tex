@@ -1,0 +1,341 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Full Stack Development Coaching - Course Notes
+%   Module 1: Bash, Git, and GitHub (Final Version)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt, a4paper]{article}
+
+%--------------------------------------------------------------------------
+%   REQUIRED PACKAGES
+%--------------------------------------------------------------------------
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{ragged2e}
+\usepackage{amsmath, amssymb}
+\usepackage{titlesec}
+\usepackage[most]{tcolorbox} % The core package for our styled boxes
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{enumitem}
+
+%--------------------------------------------------------------------------
+%   COLOR PALETTE DEFINITION
+%--------------------------------------------------------------------------
+\definecolor{primaryColor}{HTML}{005A9C}   % A strong, professional blue
+\definecolor{secondaryColor}{HTML}{4A4A4A} % Dark gray for text
+\definecolor{accentColor}{HTML}{F4F4F4}    % Light gray for backgrounds
+\definecolor{borderColor}{HTML}{DDDDDD}    % Border color for boxes
+\definecolor{terminalBG}{HTML}{2E3440}     % Dark background for terminal (Nord theme)
+\definecolor{terminalFG}{HTML}{D8DEE9}     % Light foreground for terminal text
+\definecolor{commandColor}{HTML}{88C0D0}   % A light blue for commands within text
+
+%--------------------------------------------------------------------------
+%   DOCUMENT & LAYOUT CUSTOMIZATION
+%--------------------------------------------------------------------------
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{primaryColor}}
+  {\thesection.}
+  {1em}
+  {}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{secondaryColor}}
+  {\thesubsection}
+  {1em}
+  {}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primaryColor,
+    urlcolor=primaryColor,
+    pdftitle={Full Stack Development: Module 1},
+    pdfauthor={Your Name},
+}
+
+%--------------------------------------------------------------------------
+%   CUSTOM COMMANDS & ENVIRONMENTS
+%--------------------------------------------------------------------------
+% A simple command for inline code/commands
+\newcommand{\cmd}[1]{\texttt{\textcolor{commandColor}{#1}}}
+
+% The custom terminal box environment (using tcblisting for proper formatting)
+\newtcblisting{terminal}[2][]{
+    listing only,
+    enhanced,
+    colback=terminalBG,
+    colframe=borderColor,
+    coltext=terminalFG,
+    boxrule=0.5pt,
+    arc=4pt,
+    title=#2,
+    colbacktitle=accentColor,
+    coltitle=secondaryColor,
+    fonttitle=\small\bfseries\sffamily,
+    attach boxed title to top left={yshift=-2mm, xshift=3mm},
+    boxed title style={arc=2pt, boxrule=0.5pt},
+    #1
+}
+
+%--------------------------------------------------------------------------
+%   DOCUMENT START
+%--------------------------------------------------------------------------
+\begin{document}
+
+%--- TITLE PAGE ---
+\title{
+    \vspace{-2cm}
+    \color{primaryColor}\bfseries\Huge
+    Full Stack Development Coaching \\
+    \vspace{0.5cm}
+    \color{secondaryColor}\LARGE
+    Module 1: The Developer's Toolkit \\ Bash, Git, and GitHub
+}
+\author{Rezig Hamza}
+\date{}
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+%--- TABLE OF CONTENTS ---
+\tableofcontents
+\newpage
+
+%--------------------------------------------------------------------------
+%       PART 1: THE SHELL
+%--------------------------------------------------------------------------
+\section{Introduction to the Shell}
+
+\subsection{What is the Shell?}
+The shell is a powerful program that provides a text-based interface to your computer's operating system. Instead of clicking on icons and menus, you interact with your computer by typing commands. For developers, proficiency with the shell is not optional—it is a fundamental skill.
+
+\begin{itemize}
+    \item \textbf{Efficiency:} Performing complex tasks like searching for files, installing software, or managing servers is often much faster in the shell.
+    \item \textbf{Automation:} You can write scripts to automate repetitive tasks, saving you countless hours.
+    \item \textbf{Power:} The shell gives you direct, unfiltered access to your system's capabilities, which is essential for development, deployment, and debugging.
+\end{itemize}
+
+On Unix-based systems (like Linux and macOS), the most common shell is \textbf{Bash} (Bourne Again SHell). On Windows, common options include PowerShell, Git Bash (which we recommend for this course), or the Windows Subsystem for Linux (WSL).
+
+\subsection{Basic Shell Commands}
+These are the foundational commands you will use every single day. Let's explore how to navigate and manipulate the filesystem.
+
+\subsubsection{pwd - Print Working Directory}
+Tells you exactly where you are in the filesystem hierarchy. Think of it as the "You are here" marker on a map.
+
+\begin{terminal}{dev@machine: ~$}
+$ pwd
+/home/dev
+\end{terminal}
+
+\subsubsection{ls - List Files and Directories}
+Lists the contents of the current directory. By default, it hides files and directories that start with a dot (\texttt{.}). To see everything, we use the \cmd{-a} (all) flag.
+
+\begin{terminal}{dev@machine: ~$}
+$ ls
+Desktop  Documents  Downloads  Projects
+\end{terminal}
+
+\begin{terminal}{dev@machine: ~$}
+$ ls -a
+.  ..  .bashrc  .profile  Desktop  Documents  Downloads  Projects
+\end{terminal}
+Notice the new entries \texttt{.}, \texttt{..}, and \texttt{.bashrc}. These are hidden by default.
+
+\subsubsection{cd - Change Directory}
+Allows you to navigate to a different directory.
+\begin{terminal}{dev@machine: ~$}
+$ cd Projects
+$ pwd
+/home/dev/Projects
+\end{terminal}
+
+\paragraph{Understanding the File Structure}
+The filesystem on Linux and macOS is a tree-like hierarchy, starting from the "root" directory (\cmd{/}). Every file and folder on your system exists somewhere inside this tree.
+
+\begin{terminal}{Example File Tree}
+/ (root)
+|-- home/
+|   `-- dev/  (Your Home Directory, also known as ~)
+|       |-- .bashrc (a hidden configuration file)
+|       |-- Documents/
+|       |   `-- report.pdf
+|       `-- Projects/
+|           `-- my-webapp/
+\end{terminal}
+
+With this structure in mind, let's clarify the special directories you saw with \cmd{ls -a}:
+\begin{itemize}
+    \item \cmd{.} refers to your \textbf{current} directory.
+    \item \cmd{..} refers to the \textbf{parent} directory (one level up the tree).
+\end{itemize}
+
+So, if you are currently inside \cmd{/home/dev/Projects}, running \cmd{cd ..} will take you up one level to \cmd{/home/dev}.
+
+\begin{terminal}{dev@machine: ~/Projects$}
+$ pwd
+/home/dev/Projects
+$ cd ..
+$ pwd
+/home/dev
+\end{terminal}
+
+\subsubsection{mkdir - Make Directory}
+Creates a new directory. Let's create a folder for our first project.
+\begin{terminal}{dev@machine: ~/Projects$}
+$ mkdir my-webapp
+$ ls
+my-webapp
+\end{terminal}
+
+\subsubsection{touch - Create a File}
+Creates a new, empty file.
+\begin{terminal}{dev@machine: ~/Projects$}
+$ cd my-webapp
+$ touch index.html
+$ ls
+index.html
+\end{terminal}
+
+% ... The rest of the content from the previous file continues here ...
+% All the Git and GitHub sections are unchanged and follow the same
+% correct and clear format.
+
+\section{Version Control with Git and GitHub}
+
+\subsection{What is a Version Control System (VCS)?}
+A Version Control System is a tool that tracks and manages changes to your code. Think of it as a "save game" system for your projects. It allows you to:
+\begin{itemize}
+    \item \textbf{Track your changes:} See exactly who changed what, when, and why.
+    \item \textbf{Manage your code better:} Keep a clean history of your project's evolution.
+    \item \textbf{Work in parallel:} Safely experiment with new features without breaking the main codebase.
+    \item \textbf{Collaborate effectively:} It is the backbone of modern team-based software development.
+\end{itemize}
+\textbf{Git} is the world's most popular distributed version control system. \textbf{GitHub} is a web-based platform that hosts your Git repositories and provides tools for collaboration.
+
+\subsection{The Core Git Workflow: The Three Areas}
+To master Git, you must understand its three-stage process for saving work. Every file in your project is in one of three states:
+\begin{enumerate}
+    \item \textbf{Working Directory:} Your actual project folder, containing the files you are currently editing.
+    \item \textbf{Staging Area (or "Index"):} A "drafting" area. You add snapshots of your files here to prepare them for the next permanent save. This allows you to craft precise, meaningful saves (commits).
+    \item \textbf{Repository (\texttt{.git} directory):} The permanent, unchangeable history of your project. The `commit` command takes what's in your staging area and saves it forever in the repository.
+\end{enumerate}
+
+\subsection{Local Operations: Your First Repository}
+
+\subsubsection{git init: Initializing a Repo}
+This command turns a regular directory into a Git repository. It creates a hidden \cmd{.git} folder where Git stores all its history and metadata. You only run this once per project.
+
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$}
+$ git init
+Initialized empty Git repository in /home/dev/Projects/my-webapp/.git/
+\end{terminal}
+
+\subsubsection{git status: Checking the Status}
+This is your most-used command. It tells you the current state of your working directory and staging area. Let's see the status of our new repo.
+
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$ (main)}
+$ git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        index.html
+
+nothing added to commit but untracked files are present (use "git add" to track)
+\end{terminal}
+Git sees our \cmd{index.html} but tells us it's "untracked."
+
+\subsubsection{git add: Staging Files}
+This command moves changes from the working directory to the staging area. You can stage a specific file or all files.
+
+To stage our \cmd{index.html} file:
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$ (main)}
+$ git add index.html
+\end{terminal}
+
+Now let's check the status again.
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$ (main)}
+$ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   index.html
+\end{terminal}
+Notice the file is now green and listed under "Changes to be committed." It's ready to be saved permanently.
+
+\subsubsection{git commit: Committing Files}
+This command takes everything in the staging area and saves it as a permanent snapshot in the repository. Each commit has a unique ID and a message describing the changes. \textbf{Good commit messages are crucial!}
+
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$ (main)}
+$ git commit -m "feat: Add initial index.html page"
+[main (root-commit) a1b2c3d] feat: Add initial index.html page
+ 1 file changed, 1 insertion(+)
+ create mode 100644 index.html
+\end{terminal}
+The \cmd{-m} flag lets you provide the message inline. Now our changes are safely saved.
+
+\subsection{Branching and Merging: Parallel Development}
+A branch is a movable pointer to a commit. It allows you to create a separate line of development to work on a feature or a bug fix without affecting the main codebase (the \cmd{main} branch).
+
+\subsubsection{git checkout: Creating and Switching Branches}
+Let's create a new branch to add a CSS file. The best practice is to use the \cmd{-b} flag, which creates the new branch and immediately switches to it.
+
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$ (main)}
+$ git checkout -b feat/add-styling
+Switched to a new branch 'feat/add-styling'
+\end{terminal}
+
+\subsubsection{git merge: Combining Branches}
+Once the feature is complete, we merge it back into our main branch. First, switch back to the target branch (\cmd{main}), then run the merge command.
+
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$ (feat/add-styling)}
+$ # Imagine we've added and committed a style.css file on this branch
+$ git checkout main
+Switched to branch 'main'
+$
+$ git merge feat/add-styling
+Updating a1b2c3d..2f8e1a9
+Fast-forward
+ style.css | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 style.css
+\end{terminal}
+
+\subsection{Working with Remotes: GitHub Workflow}
+So far, everything has been on our local machine. To collaborate or back up our code, we use a "remote"—a version of our repository hosted on a server like GitHub.
+
+\subsubsection{git push: Sending Changes to a Remote}
+After making and committing changes locally, you use \cmd{git push} to upload your commits to the remote repository.
+
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$ (main)}
+$ # First, we need to add our GitHub repo as a remote.
+$ git remote add origin https://github.com/your-username/my-webapp.git
+$
+$ # Now, we can push our main branch to origin.
+$ git push -u origin main
+Enumerating objects: 6, done.
+...
+To https://github.com/your-username/my-webapp.git
+ * [new branch]      main -> main
+\end{terminal}
+
+\subsubsection{git pull: Fetching and Merging from a Remote}
+If a teammate has pushed changes to the remote, you need to get those changes onto your local machine. \cmd{git pull} does this by fetching the changes and immediately merging them into your current branch.
+
+\begin{terminal}{dev@machine: ~/Projects/my-webapp$ (main)}
+$ git pull origin main
+From https://github.com/your-username/my-webapp
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+\end{terminal}
+
+\end{document}
